@@ -94,8 +94,8 @@ function downloadBundle(opts: {
 }
 
 // If a downloaded bundle was built with base "/" instead of the expected subpath base,
-// rewrite root-relative paths in index.html and its JS entry point(s) so everything resolves
-// correctly when served under a subpath. Detects correctly-built bundles and skips them.
+// rewrite root-relative paths across the entire bundle so everything resolves correctly
+// when served under a subpath. Detects correctly-built bundles and skips them.
 function rebaseBundle(dir: string, base: string): void {
   const htmlPath = join(dir, 'index.html');
   let html: string;
@@ -116,22 +116,25 @@ function rebaseBundle(dir: string, base: string): void {
     }
   });
 
-  // Rewrite HTML src/href attributes.
-  const rewrittenHtml = html.replace(
-    /((?:src|href)\s*=\s*["'])\/((?!\/)[^"']*)/g,
-    (_match, attr, path) => `${attr}${base}${path}`,
-  );
-  if (rewrittenHtml !== html) {
-    writeFileSync(htmlPath, rewrittenHtml);
-    console.log(`[assemble] rebased ${htmlPath} to base "${base}"`);
+  // Rewrite every .html file in the bundle (top-level harness AND nested test pages).
+  const htmlFiles = findFiles(dir, '.html');
+  for (const hp of htmlFiles) {
+    const src = readFileSync(hp, 'utf-8');
+    const patched = src.replace(
+      /((?:src|href)\s*=\s*["'])\/((?!\/)[^"']*)/g,
+      (_match, attr, path) => `${attr}${base}${path}`,
+    );
+    if (patched !== src) {
+      writeFileSync(hp, patched);
+      console.log(`[assemble] rebased ${hp}`);
+    }
   }
 
-  // Rewrite JS entry points: for each bundle directory, replace root-relative references
+  // Rewrite JS files: for each bundle directory, replace root-relative references
   // (e.g. "/openfl-tests/") with the base-prefixed version (e.g. "/reference/openfl-tests/").
   if (dirs.length === 0) return;
-  const jsFiles = readdirSync(join(dir, 'assets')).filter((f) => f.endsWith('.js'));
-  for (const jsFile of jsFiles) {
-    const jsPath = join(dir, 'assets', jsFile);
+  const jsFiles = findFiles(dir, '.js');
+  for (const jsPath of jsFiles) {
     const js = readFileSync(jsPath, 'utf-8');
     let patched = js;
     for (const d of dirs) {
@@ -140,9 +143,24 @@ function rebaseBundle(dir: string, base: string): void {
     }
     if (patched !== js) {
       writeFileSync(jsPath, patched);
-      console.log(`[assemble] rebased ${jsPath} (${dirs.length} directory prefixes)`);
+      console.log(`[assemble] rebased ${jsPath}`);
     }
   }
+
+  console.log(`[assemble] rebase complete → base "${base}" (${htmlFiles.length} html, ${jsFiles.length} js)`);
+}
+
+function findFiles(dir: string, ext: string): string[] {
+  const results: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...findFiles(full, ext));
+    } else if (entry.name.endsWith(ext)) {
+      results.push(full);
+    }
+  }
+  return results;
 }
 
 function run(command: string, args: readonly string[]): void {
