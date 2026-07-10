@@ -297,12 +297,17 @@
 
       /* ── Tool cards ──────────────────────────────────────────────────────── */
       .tools {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 12px;
       }
 
-      /* Examples: the prominent, centred primary link. */
+      @media (max-width: 560px) {
+        .tools {
+          grid-template-columns: 1fr;
+        }
+      }
+
       .tool {
         display: flex;
         flex-direction: column;
@@ -351,46 +356,6 @@
         max-width: 400px;
         color: #8b93a3;
         line-height: 1.5;
-      }
-
-      /* Functional tests: a compact, de-emphasised row below Examples — useful, but secondary for now. */
-      .tool-compact {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        padding: 11px 15px;
-        background: rgba(22, 22, 22, 0.5);
-        border: 1px solid #222;
-        border-radius: 9px;
-        color: #79828f;
-        font-size: 12.5px;
-        line-height: 1.4;
-        text-decoration: none;
-        transition:
-          color 0.14s,
-          border-color 0.14s,
-          background 0.14s;
-      }
-
-      .tool-compact:hover {
-        color: #aab3c0;
-        border-color: #3d7fff;
-        background: rgba(26, 39, 64, 0.5);
-      }
-
-      .tool-compact svg {
-        width: 14px;
-        height: 14px;
-        flex-shrink: 0;
-        stroke: currentColor;
-        fill: none;
-        stroke-width: 1.6;
-        opacity: 0.7;
-      }
-
-      .tool-compact strong {
-        color: #97a0b0;
-        font-weight: 600;
       }
 
       /* ── Capability grid ─────────────────────────────────────────────────── */
@@ -542,7 +507,7 @@
         </svg>
         Flight
       </h1>
-      <p class="tagline">A 2D rendering SDK designed for AI agents</p>
+      <p class="tagline">A rendering SDK designed for AI agents</p>
       <p class="subtag">explicit · grepable · nothing hidden</p>
       <div class="renderers">
         <span class="renderer">DOM</span>
@@ -616,53 +581,62 @@
       <h2 class="eyebrow">Everything available. Only what's needed.</h2>
       <div class="panel size">
         <p class="size-lead">
-          Every package is <strong>tree-shakable</strong> and side-effect-free, so a build ships only what it draws — a
+          Every package is <strong>tree-shakable</strong> and side-effect-free, so a build ships only what it uses — a
           shape and a renderer, not an entire engine.
         </p>
         <div class="size-row" data-size="displayingabitmap:canvas">
           <span class="label">Bitmap · Canvas</span>
-          <span class="track"><span class="fill" style="width: 15%"></span></span>
-          <span class="kb">3.5 KB</span>
+          <span class="track"><span class="fill" style="width: 13%"></span></span>
+          <span class="kb">3.6 KB</span>
         </div>
-        <div class="size-row" data-size="drawingshapes:canvas">
-          <span class="label">Shape · Canvas</span>
-          <span class="track"><span class="fill" style="width: 27%"></span></span>
-          <span class="kb">6.3 KB</span>
+        <div class="size-row" data-size="displayingabitmap:webgpu">
+          <span class="label">Bitmap · WebGPU</span>
+          <span class="track"><span class="fill" style="width: 28%"></span></span>
+          <span class="kb">7.8 KB</span>
         </div>
         <div class="size-row" data-size="sparktrail:webgl">
           <span class="label">Particles · WebGL</span>
-          <span class="track"><span class="fill" style="width: 47%"></span></span>
-          <span class="kb">11.0 KB</span>
+          <span class="track"><span class="fill" style="width: 41%"></span></span>
+          <span class="kb">11.2 KB</span>
         </div>
         <div class="size-row" data-size="piratepig:webgl">
           <span class="label">PiratePig · WebGL</span>
+          <span class="track"><span class="fill" style="width: 91%"></span></span>
+          <span class="kb">24.8 KB</span>
+        </div>
+        <div class="size-row" data-size="piratepig:webgpu">
+          <span class="label">PiratePig · WebGPU</span>
           <span class="track"><span class="fill" style="width: 100%"></span></span>
-          <span class="kb">23.6 KB</span>
+          <span class="kb">27.2 KB</span>
         </div>
         <p class="size-note">gzipped · measured from the project's size baseline</p>
       </div>
     </section>
 
-    <!-- Capability grid: each tile deep-links into the matching example or functional test. -->
+    <!-- Capability grid: each tile deep-links into the matching example or reference test. -->
     <section aria-label="Capabilities">
-      <h2 class="eyebrow">A complete 2D feature set</h2>
+      <h2 class="eyebrow">Feature set</h2>
       <div class="grid">
-        <a class="cap" href="examples/">Display objects</a>
         <a class="cap" href="examples/drawingshapes/canvas/">Shapes</a>
         <a class="cap" href="examples/displayingabitmap/canvas/">Bitmaps</a>
         <a class="cap" href="examples/addingtext/canvas/">Text</a>
-        <a class="cap" href="reference/blur/canvas/">Filters</a>
-        <a class="cap" href="reference/">Blend modes</a>
-        <a class="cap" href="reference/">Masks</a>
         <a class="cap" href="examples/usingtilemap/canvas/">Tilemaps</a>
         <a class="cap" href="examples/sparktrail/webgl/">Particles</a>
         <a class="cap" href="examples/tweenexample/canvas/">Tweens</a>
         <a class="cap" href="examples/animatedsprite/canvas/">Timelines</a>
         <a class="cap" href="examples/nyancat/canvas/">Spritesheets</a>
+        <a class="cap" href="reference/">Filters</a>
+        <a class="cap" href="reference/">Effects</a>
+        <a class="cap" href="reference/">Blend modes</a>
+        <a class="cap" href="reference/">Masks</a>
+        <a class="cap" href="examples/">Audio</a>
+        <a class="cap" href="examples/">Video</a>
+        <a class="cap" href="examples/">Mesh</a>
+        <a class="cap" href="examples/">Easing</a>
       </div>
     </section>
 
-    <!-- Examples & functional tests: the "go explore" exit, placed last once the case is made. -->
+    <!-- Examples & reference: the "go explore" exit, placed last once the case is made. -->
     <main class="tools">
       <a class="tool" data-tool="examples" href="examples/">
         <div class="tool-name">
@@ -677,13 +651,18 @@
           Browse the example gallery and flip each scene between the DOM, Canvas, WebGL, and WebGPU renderers.
         </p>
       </a>
-      <a class="tool-compact" data-tool="reference" href="reference/">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M9 3v6l-5 9a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3l-5-9V3" />
-          <path d="M7 3h10" />
-          <path d="M8 14h8" />
-        </svg>
-        <span><strong>Functional Tests</strong> — per-feature rendering checks against reference implementations</span>
+      <a class="tool" data-tool="reference" href="reference/">
+        <div class="tool-name">
+          <!-- Split-panel icon: two frames side by side -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <line x1="12" y1="4" x2="12" y2="20" />
+          </svg>
+          Reference
+        </div>
+        <p class="tool-desc">
+          Compare Flight's output side-by-side with other frameworks, example by example.
+        </p>
       </a>
     </main>
 
