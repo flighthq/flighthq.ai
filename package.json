@@ -1,0 +1,22 @@
+{
+  "name": "@flighthq/site",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "assemble": "tsx scripts/assemble.ts",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@flighthq/sdk": "^0.1.0"
+  },
+  "devDependencies": {
+    "@webgpu/types": "^0.1.70",
+    "tsx": "^4.22.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
+}
