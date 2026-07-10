@@ -1,0 +1,54 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Assemble site (landing + examples + reference bundles)
+        run: npm run assemble
+        env:
+          PAGES_CNAME: flighthq.ai
+          # EXAMPLES_REPO defaults to flighthq/flight; override if needed.
+          # EXAMPLES_VERSION: v0.1.0   # pin a specific release; omit for latest.
+          # REFERENCE_REPO defaults to flighthq/flight-reference; override if needed.
+          # REFERENCE_VERSION: v0.1.0   # pin a specific release; omit for latest.
+          # If either repo is private, create a PAT with repo read scope and add it as a secret:
+          # GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+          GH_TOKEN: ${{ github.token }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -14,6 +14,7 @@
     "@flighthq/sdk": "^0.1.0"
   },
   "devDependencies": {
+    "@types/node": "^26.1.1",
     "@webgpu/types": "^0.1.70",
     "tsx": "^4.22.4",
     "typescript": "^5.9.3",
